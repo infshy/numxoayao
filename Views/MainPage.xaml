@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="VolumeControl.Views.MainPage"
+             Title="Volume Control">
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#0B1020" Offset="0.0" />
+            <GradientStop Color="#1B2347" Offset="0.55" />
+            <GradientStop Color="#2B1B4B" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <ScrollView>
+        <!-- Responsive: thẻ tự co giãn, tối đa 520dp và căn giữa trên Desktop -->
+        <VerticalStackLayout Padding="20,32" Spacing="24" MaximumWidthRequest="520"
+                             HorizontalOptions="Fill" VerticalOptions="Center">
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="🎧  VOLUME CONTROL" FontSize="14" FontAttributes="Bold" CharacterSpacing="4"
+                       HorizontalOptions="Center" TextColor="#7FA8FF" />
+                <Label Text="{Binding ModeText}" FontSize="26" FontAttributes="Bold"
+                       HorizontalOptions="Center" TextColor="White" />
+            </VerticalStackLayout>
+
+            <Border StrokeThickness="1" Padding="28,32" StrokeShape="RoundRectangle 32">
+                <Border.Stroke>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#5B8CFF" Offset="0" />
+                        <GradientStop Color="#B061FF" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Stroke>
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#CC1E2646" Offset="0" />
+                        <GradientStop Color="#CC141A33" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Border.Shadow>
+                    <Shadow Brush="#5B8CFF" Offset="0,8" Radius="40" Opacity="0.35" />
+                </Border.Shadow>
+
+                <VerticalStackLayout Spacing="26" HorizontalOptions="Center">
+                    <!-- Hiển thị mức âm lượng lớn -->
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="{Binding VolumeText}" FontSize="64" FontAttributes="Bold"
+                               HorizontalOptions="Center" TextColor="White" />
+                        <Label Text="ÂM LƯỢNG" FontSize="12" CharacterSpacing="3"
+                               HorizontalOptions="Center" TextColor="#8D97AD" />
+                    </VerticalStackLayout>
+
+                    <!-- Slot Núm xoay ảo (Hùng): thay Grid này bằng GraphicsView 160x160 -->
+                    <Grid x:Name="KnobHost" IsVisible="{Binding UseKnob}" WidthRequest="160" HeightRequest="160"
+                          HorizontalOptions="Center">
+                        <Ellipse StrokeThickness="3" Fill="#10152B">
+                            <Ellipse.Stroke>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#5B8CFF" Offset="0" />
+                                    <GradientStop Color="#B061FF" Offset="1" />
+                                </LinearGradientBrush>
+                            </Ellipse.Stroke>
+                        </Ellipse>
+                        <Label Text="🎚  Knob" TextColor="#8D97AD" FontSize="14"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Grid>
+
+                    <!-- Linear Slider, two-way binding -->
+                    <Slider x:Name="VolumeSlider" IsVisible="{Binding UseSlider}"
+                            Minimum="0" Maximum="1" Value="{Binding Volume, Mode=TwoWay}"
+                            HeightRequest="40" HorizontalOptions="Fill"
+                            MinimumTrackColor="#5B8CFF" MaximumTrackColor="#3A4263" ThumbColor="#B061FF"
+                            DragCompleted="OnSliderDragCompleted" />
+
+                    <!-- Nút điều khiển -->
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                        <Button Grid.Column="0" Text="−" Command="{Binding StepCommand}" CommandParameter="-1"
+                                Style="{StaticResource RoundBtn}" />
+                        <Button Grid.Column="1" Text="+" Command="{Binding StepCommand}" CommandParameter="1"
+                                Style="{StaticResource RoundBtn}" />
+                        <Button Grid.Column="2" Text="{Binding MuteButtonText}" Command="{Binding ToggleMuteCommand}"
+                                Style="{StaticResource RoundBtn}" />
+                        <Button Grid.Column="3" Text="{Binding PlayButtonText}" Command="{Binding TogglePlayCommand}"
+                                Style="{StaticResource RoundBtn}" />
+                    </Grid>
+
+                    <Button Text="⇄  Đổi chế độ Knob / Slider" Command="{Binding ToggleModeCommand}"
+                            TextColor="White" FontAttributes="Bold" CornerRadius="22" HeightRequest="48">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#4F8CFF" Offset="0" />
+                                <GradientStop Color="#A25BFF" Offset="1" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

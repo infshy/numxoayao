@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Volume Control (Windows)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/bin/Debug/net10.0-windows10.0.19041.0/win-x64/VolumeControl.exe",
+      "cwd": "${workspaceFolder}/bin/Debug/net10.0-windows10.0.19041.0/win-x64",
+      "console": "internalConsole",
+      "stopAtEntry": false
+    }
+  ]
+}
