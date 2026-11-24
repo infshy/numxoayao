@@ -3,7 +3,7 @@
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace VolumeControl.WinUI;
+namespace VolumeControlApp.WinUI;
 
 /// <summary>
 /// Provides application-specific behavior to supplement the default Application class.
@@ -17,7 +17,6 @@ public partial class App : MauiWinUIApplication
 	public App()
 	{
 		this.InitializeComponent();
-		this.UnhandledException += (s, e) => System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "vc_crash.txt"), e.Exception?.ToString() ?? e.Message);
 	}
 
 	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();

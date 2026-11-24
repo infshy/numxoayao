@@ -1,17 +1,15 @@
-using VolumeControl.Views;
-
-namespace VolumeControl;
+namespace VolumeControlApp;
 
 public partial class App : Application
 {
-    private readonly IServiceProvider _services;
+	private readonly MainPage _mainPage;
 
-    public App(IServiceProvider services)
-    {
-        InitializeComponent();
-        _services = services;
-    }
+	public App(MainPage mainPage)
+	{
+		InitializeComponent();
+		_mainPage = mainPage;
+	}
 
-    protected override Window CreateWindow(IActivationState? activationState)
-        => new Window(_services.GetRequiredService<MainPage>()) { Title = "Volume Control", Width = 700, Height = 860 };
+	protected override Window CreateWindow(IActivationState? activationState)
+		=> new(_mainPage) { Title = "Volume Control", Width = 700, Height = 860 };
 }

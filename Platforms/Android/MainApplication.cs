@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace VolumeControl;
+namespace VolumeControlApp;
 
 [Application]
 public class MainApplication : MauiApplication

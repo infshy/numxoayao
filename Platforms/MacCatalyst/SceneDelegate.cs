@@ -1,6 +1,6 @@
 using Foundation;
 
-namespace VolumeControl;
+namespace VolumeControlApp;
 
 [Register("SceneDelegate")]
 public class SceneDelegate : MauiUISceneDelegate
