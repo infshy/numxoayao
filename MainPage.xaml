@@ -13,13 +13,9 @@
             <Setter Property="FontSize" Value="12" />
         </Style>
     </ContentPage.Resources>
-    <ContentPage.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#0B1020" Offset="0" />
-            <GradientStop Color="#1B2347" Offset="0.55" />
-            <GradientStop Color="#2B1B4B" Offset="1" />
-        </LinearGradientBrush>
-    </ContentPage.Background>
+    <ContentPage.BackgroundColor>
+        <AppThemeBinding Light="#F1F4FA" Dark="#0B1020" />
+    </ContentPage.BackgroundColor>
 
     <ScrollView>
         <VerticalStackLayout Padding="20,28" Spacing="20" MaximumWidthRequest="520"
@@ -28,7 +24,11 @@
                 <Label Text="🎧  VOLUME CONTROL" FontSize="13" FontAttributes="Bold" CharacterSpacing="3"
                        HorizontalOptions="Center" TextColor="#7FA8FF" />
                 <Label Text="{Binding ModeText}" FontSize="25" FontAttributes="Bold"
-                       HorizontalOptions="Center" TextColor="White" />
+                       HorizontalOptions="Center">
+                    <Label.TextColor>
+                        <AppThemeBinding Light="#182033" Dark="White" />
+                    </Label.TextColor>
+                </Label>
             </VerticalStackLayout>
 
             <Border StrokeThickness="1" Padding="24,26" StrokeShape="RoundRectangle 30">
@@ -80,8 +80,10 @@
                         <Button Grid.Column="2" Text="{Binding MuteButtonText}" Command="{Binding ToggleMuteCommand}"
                                 Style="{StaticResource RoundBtn}" />
                         <Button Grid.Column="3" Text="{Binding PlayButtonText}" Command="{Binding TogglePlayCommand}"
-                                Style="{StaticResource RoundBtn}" />
+                                Style="{StaticResource RoundBtn}" FontSize="10" />
                     </Grid>
+                    <Label Text="{Binding AudioStatusText}" FontSize="12"
+                           HorizontalOptions="Center" TextColor="#B7C3D8" />
 
                     <Button Text="⇄  Đổi chế độ Knob / Slider" Command="{Binding ToggleModeCommand}"
                             TextColor="White" FontAttributes="Bold" CornerRadius="22" HeightRequest="46">
@@ -92,6 +94,10 @@
                             </LinearGradientBrush>
                         </Button.Background>
                     </Button>
+
+                    <Button Text="{Binding ThemeButtonText}" Command="{Binding ToggleThemeCommand}"
+                            TextColor="White" BackgroundColor="#273253" FontAttributes="Bold"
+                            CornerRadius="22" HeightRequest="42" />
                 </VerticalStackLayout>
             </Border>
         </VerticalStackLayout>

@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+using Plugin.Maui.Audio;
+using VolumeControlApp.Services;
 using VolumeControlApp.ViewModels;
 
 namespace VolumeControlApp;
@@ -10,6 +12,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
+			.AddAudio()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -18,6 +21,7 @@ public static class MauiProgram
 
 		builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddSingleton<MainPage>();
+		builder.Services.AddSingleton<IAudioPlaybackService, AudioPlaybackService>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

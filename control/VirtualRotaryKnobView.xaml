@@ -10,9 +10,9 @@
 	<GraphicsView
 		x:Name="KnobGraphicsView"
 		WidthRequest="160"
-		HeightRequest="160">
-		<GraphicsView.GestureRecognizers>
-			<PanGestureRecognizer PanUpdated="OnPanUpdated" />
-		</GraphicsView.GestureRecognizers>
-	</GraphicsView>
+		HeightRequest="160"
+		StartInteraction="OnStartInteraction"
+		DragInteraction="OnDragInteraction"
+		EndInteraction="OnEndInteraction"
+		CancelInteraction="OnCancelInteraction" />
 </ContentView>

@@ -1,4 +1,4 @@
-﻿snamespace VolumeControlApp;
+﻿namespace VolumeControlApp;
 
 public partial class MainPage : ContentPage
 {
