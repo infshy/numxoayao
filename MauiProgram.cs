@@ -1,5 +1,8 @@
 using Microsoft.Extensions.Logging;
 using Plugin.Maui.Audio;
+#if WINDOWS
+using VolumeControlApp.Platforms.Windows;
+#endif
 using VolumeControlApp.Services;
 using VolumeControlApp.ViewModels;
 
@@ -22,6 +25,13 @@ public static class MauiProgram
 		builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddSingleton<IAudioPlaybackService, AudioPlaybackService>();
+#if WINDOWS
+		builder.Services.AddSingleton<ISystemVolumeService, WindowsSystemVolumeService>();
+		builder.Services.AddSingleton<IWindowModeService, WindowsWindowModeService>();
+#else
+		builder.Services.AddSingleton<ISystemVolumeService, UnsupportedSystemVolumeService>();
+		builder.Services.AddSingleton<IWindowModeService, UnsupportedWindowModeService>();
+#endif
 
 #if DEBUG
 		builder.Logging.AddDebug();

@@ -16,6 +16,7 @@ public partial class VirtualRotaryKnobView : ContentView
 	private readonly RotaryKnobDrawable _drawable = new();
 	private double _lastPointerAngle;
 	private bool _hasLastPointerAngle;
+	private bool _isDragging;
 
 	public VirtualRotaryKnobView()
 	{
@@ -33,8 +34,21 @@ public partial class VirtualRotaryKnobView : ContentView
 	private static void OnValueChanged(BindableObject bindable, object oldValue, object newValue)
 	{
 		var knob = (VirtualRotaryKnobView)bindable;
-		knob.UpdateDrawable();
-		knob.KnobGraphicsView.Invalidate();
+		var target = (double)newValue;
+		if (knob._isDragging || !knob.IsLoaded || Math.Abs(target - (double)oldValue) < 0.0001)
+		{
+			knob._drawable.Value = target;
+			knob.KnobGraphicsView.Invalidate();
+			return;
+		}
+
+		knob.AbortAnimation("knob-value");
+		var animation = new Animation(value =>
+		{
+			knob._drawable.Value = value;
+			knob.KnobGraphicsView.Invalidate();
+		}, (double)oldValue, target, Easing.CubicOut);
+		animation.Commit(knob, "knob-value", 16, 110);
 	}
 
 	private void UpdateDrawable()
@@ -44,6 +58,7 @@ public partial class VirtualRotaryKnobView : ContentView
 
 	private void OnStartInteraction(object? sender, TouchEventArgs e)
 	{
+		_isDragging = true;
 		_hasLastPointerAngle = TryGetPointerAngle(e, out _lastPointerAngle);
 	}
 
@@ -67,8 +82,17 @@ public partial class VirtualRotaryKnobView : ContentView
 		_hasLastPointerAngle = true;
 	}
 
-	private void OnEndInteraction(object? sender, TouchEventArgs e) => _hasLastPointerAngle = false;
-	private void OnCancelInteraction(object? sender, EventArgs e) => _hasLastPointerAngle = false;
+	private void OnEndInteraction(object? sender, TouchEventArgs e)
+	{
+		_isDragging = false;
+		_hasLastPointerAngle = false;
+	}
+
+	private void OnCancelInteraction(object? sender, EventArgs e)
+	{
+		_isDragging = false;
+		_hasLastPointerAngle = false;
+	}
 
 	private bool TryGetPointerAngle(TouchEventArgs e, out double angle)
 	{

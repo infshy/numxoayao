@@ -1,104 +1,199 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage x:Class="VolumeControlApp.MainPage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:VolumeControlApp.Controls"
-    Title="Núm xoay ảo">
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:VolumeControlApp.Controls"
+             Title="Virtual Volume Controller"
+             BackgroundColor="{AppThemeBinding Light=#F3F4F7, Dark=#101114}">
     <ContentPage.Resources>
-        <Style x:Key="RoundBtn" TargetType="Button">
-            <Setter Property="BackgroundColor" Value="#273253" />
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E8E9EE, Dark=#22252C}" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#24252B, Dark=#F5F5F7}" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+            <Setter Property="BackgroundColor" Value="#8B7CFF" />
             <Setter Property="TextColor" Value="White" />
-            <Setter Property="CornerRadius" Value="20" />
-            <Setter Property="Padding" Value="8,10" />
-            <Setter Property="FontSize" Value="12" />
         </Style>
     </ContentPage.Resources>
-    <ContentPage.BackgroundColor>
-        <AppThemeBinding Light="#F1F4FA" Dark="#0B1020" />
-    </ContentPage.BackgroundColor>
 
     <ScrollView>
-        <VerticalStackLayout Padding="20,28" Spacing="20" MaximumWidthRequest="520"
-                             HorizontalOptions="Fill" VerticalOptions="Center">
-            <VerticalStackLayout Spacing="4">
-                <Label Text="🎧  VOLUME CONTROL" FontSize="13" FontAttributes="Bold" CharacterSpacing="3"
-                       HorizontalOptions="Center" TextColor="#7FA8FF" />
-                <Label Text="{Binding ModeText}" FontSize="25" FontAttributes="Bold"
-                       HorizontalOptions="Center">
-                    <Label.TextColor>
-                        <AppThemeBinding Light="#182033" Dark="White" />
-                    </Label.TextColor>
-                </Label>
+        <VerticalStackLayout x:Name="PageContent" Padding="24,26" Spacing="22" MaximumWidthRequest="860"
+                             HorizontalOptions="Center" VerticalOptions="Center" Opacity="0">
+            <!-- Standard control center -->
+            <VerticalStackLayout IsVisible="{Binding IsStandardMode}" Spacing="22">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" RowDefinitions="Auto,Auto"
+                      ColumnSpacing="10" RowSpacing="16">
+                    <Border WidthRequest="46" HeightRequest="46" StrokeThickness="1"
+                            Stroke="#393545" BackgroundColor="#201E2B"
+                            StrokeShape="RoundRectangle 14" VerticalOptions="Center">
+                        <Label Text="V" FontSize="23" FontAttributes="Bold" TextColor="#A99DFF"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                        <Label Text="VIRTUAL VOLUME" FontSize="16" FontAttributes="Bold"
+                               CharacterSpacing="1.2" TextColor="{AppThemeBinding Light=#191A20, Dark=#F5F5F7}" />
+                        <Label Text="CONTROL CENTER  ·  2.0" FontSize="10" CharacterSpacing="1.5"
+                               TextColor="{AppThemeBinding Light=#717580, Dark=#999DA7}" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="2" Text="{Binding SettingsButtonText}" Command="{Binding ToggleSettingsCommand}"
+                            Style="{StaticResource SecondaryButton}" HeightRequest="42" />
+                    <Button Grid.Column="3" Text="{Binding CompactButtonText}" Command="{Binding ToggleCompactModeCommand}"
+                            IsVisible="{Binding IsCompactModeSupported}" Style="{StaticResource SecondaryButton}"
+                            HeightRequest="42" />
+                    <Button Grid.Column="4" Text="{Binding ThemeButtonText}" Command="{Binding ToggleThemeCommand}"
+                            Style="{StaticResource SecondaryButton}" HeightRequest="42" />
+
+                    <Border Grid.Row="1" Grid.ColumnSpan="5" Padding="14,10" StrokeThickness="1"
+                            Stroke="{AppThemeBinding Light=#DFE1E7, Dark=#30333B}"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#191B20}"
+                            StrokeShape="RoundRectangle 14">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
+                            <Label Text="●" TextColor="{AppThemeBinding Light=#6A5AE0, Dark=#A99DFF}"
+                                   FontSize="12" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding SystemVolumeStatusText}"
+                                   FontSize="11" FontAttributes="Bold" CharacterSpacing="1"
+                                   TextColor="{AppThemeBinding Light=#4B4D57, Dark=#D4D5DA}"
+                                   VerticalOptions="Center" />
+                            <Label Grid.Column="2" Text="{Binding AudioStatusText}" FontSize="11"
+                                   TextColor="{AppThemeBinding Light=#717580, Dark=#999DA7}"
+                                   VerticalOptions="Center" HorizontalTextAlignment="End" />
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <Border Padding="26,24" StrokeThickness="1"
+                        Stroke="{AppThemeBinding Light=#DFE1E7, Dark=#30333B}"
+                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#191B20}"
+                        StrokeShape="RoundRectangle 24">
+                    <Border.Shadow>
+                        <Shadow Brush="#000000" Offset="0,8" Radius="24" Opacity="0.12" />
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="16">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="MASTER VOLUME" FontSize="11" FontAttributes="Bold"
+                                       CharacterSpacing="1.8" TextColor="{AppThemeBinding Light=#777A84, Dark=#999DA7}" />
+                                <Label Text="{Binding VolumeTargetText}" FontSize="10" CharacterSpacing="0.5"
+                                       TextColor="{AppThemeBinding Light=#777A84, Dark=#999DA7}" />
+                            </VerticalStackLayout>
+                            <Border Grid.Column="1" Padding="10,5" StrokeThickness="1"
+                                    Stroke="{AppThemeBinding Light=#E2E3E8, Dark=#343640}"
+                                    BackgroundColor="{AppThemeBinding Light=#F5F5F8, Dark=#22252C}"
+                                    StrokeShape="RoundRectangle 10" VerticalOptions="Start">
+                                <Label Text="{Binding ModeText}" FontSize="10" FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#4B4D57, Dark=#D4D5DA}" />
+                            </Border>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="0" HorizontalOptions="Center">
+                            <Label Text="{Binding VolumeText}" FontSize="68" FontAttributes="Bold"
+                                   CharacterSpacing="-1" HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#191A20, Dark=#F5F5F7}" />
+                            <Label Text="PERCENT" FontSize="10" CharacterSpacing="2.5"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#777A84, Dark=#999DA7}" />
+                        </VerticalStackLayout>
+
+                        <controls:VirtualRotaryKnobView IsVisible="{Binding UseKnob}"
+                            Value="{Binding Volume, Mode=TwoWay}"
+                            WidthRequest="190" HeightRequest="190" HorizontalOptions="Center" />
+
+                        <VerticalStackLayout Spacing="4" MaximumWidthRequest="520" HorizontalOptions="Fill">
+                            <Slider x:Name="VolumeSlider" Minimum="0" Maximum="1"
+                                    Value="{Binding Volume, Mode=TwoWay}" HeightRequest="42"
+                                    MinimumTrackColor="#8B7CFF" MaximumTrackColor="#454750"
+                                    ThumbColor="#B2A8FF" DragCompleted="OnSliderDragCompleted" />
+                            <Grid ColumnDefinitions="*,*">
+                                <Label Text="0%" FontSize="11" TextColor="{AppThemeBinding Light=#777A84, Dark=#999DA7}" />
+                                <Label Grid.Column="1" Text="100%" FontSize="11" HorizontalTextAlignment="End"
+                                       TextColor="{AppThemeBinding Light=#777A84, Dark=#999DA7}" />
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10" MaximumWidthRequest="520"
+                              HorizontalOptions="Fill">
+                            <Button Grid.Column="0" Text="−  GIẢM 1%" Command="{Binding StepCommand}"
+                                    CommandParameter="-1" Style="{StaticResource SecondaryButton}" HeightRequest="48" />
+                            <Button Grid.Column="1" Text="+  TĂNG 1%" Command="{Binding StepCommand}"
+                                    CommandParameter="1" Style="{StaticResource SecondaryButton}" HeightRequest="48" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10" MaximumWidthRequest="520"
+                              HorizontalOptions="Fill">
+                            <Button Grid.Column="0" Text="{Binding MuteButtonText}" Command="{Binding ToggleMuteCommand}"
+                                    BackgroundColor="{Binding MuteButtonBackground}" TextColor="White"
+                                    CornerRadius="14" FontSize="12" FontAttributes="Bold" HeightRequest="50" />
+                            <Button Grid.Column="1" Text="{Binding PlayButtonText}" Command="{Binding TogglePlayCommand}"
+                                    BackgroundColor="{Binding PlaybackButtonBackground}" TextColor="White"
+                                    CornerRadius="14" FontSize="12" FontAttributes="Bold" HeightRequest="50" />
+                        </Grid>
+                        <Label Text="{Binding AudioStatusText}" FontSize="11" HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#777A84, Dark=#999DA7}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border IsVisible="{Binding IsSettingsVisible}" Padding="20" StrokeThickness="1"
+                        Stroke="{AppThemeBinding Light=#DFE1E7, Dark=#30333B}"
+                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#191B20}"
+                        StrokeShape="RoundRectangle 20">
+                    <VerticalStackLayout Spacing="14">
+                        <Label Text="CÀI ĐẶT" FontSize="11" FontAttributes="Bold"
+                               CharacterSpacing="1.7" TextColor="{AppThemeBinding Light=#777A84, Dark=#999DA7}" />
+
+                        <Label Text="Thiết bị cần điều khiển" FontSize="15" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#191A20, Dark=#F5F5F7}" />
+                        <Picker Title="Chọn loa hoặc tai nghe" ItemsSource="{Binding OutputDevices}"
+                                ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedOutputDevice, Mode=TwoWay}"
+                                IsVisible="{Binding IsSystemVolumeAvailable}"
+                                TextColor="{AppThemeBinding Light=#24252B, Dark=#F5F5F7}"
+                                BackgroundColor="{AppThemeBinding Light=#F3F4F7, Dark=#22252C}" />
+                        <Label IsVisible="{Binding IsSystemVolumeAvailable}"
+                               Text="Chọn một thiết bị để điều chỉnh âm lượng riêng của loa/tai nghe đó."
+                               FontSize="11" TextColor="{AppThemeBinding Light=#777A84, Dark=#999DA7}" />
+
+                        <Label Text="Cách điều khiển" FontSize="15" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#191A20, Dark=#F5F5F7}" />
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Button Grid.Column="0" Text="Núm xoay + slider" Command="{Binding ToggleModeCommand}"
+                                    IsEnabled="{Binding UseSlider}" Style="{StaticResource SecondaryButton}" />
+                            <Button Grid.Column="1" Text="Chỉ slider" Command="{Binding ToggleModeCommand}"
+                                    IsEnabled="{Binding UseKnob}" Style="{StaticResource SecondaryButton}" />
+                        </Grid>
+                        <Label Text="Âm lượng và giao diện được tự động lưu."
+                               FontSize="11" TextColor="{AppThemeBinding Light=#777A84, Dark=#999DA7}" />
+                    </VerticalStackLayout>
+                </Border>
             </VerticalStackLayout>
 
-            <Border StrokeThickness="1" Padding="24,26" StrokeShape="RoundRectangle 30">
-                <Border.Stroke>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#5B8CFF" Offset="0" />
-                        <GradientStop Color="#B061FF" Offset="1" />
-                    </LinearGradientBrush>
-                </Border.Stroke>
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#CC1E2646" Offset="0" />
-                        <GradientStop Color="#CC141A33" Offset="1" />
-                    </LinearGradientBrush>
-                </Border.Background>
-                <Border.Shadow>
-                    <Shadow Brush="#5B8CFF" Offset="0,8" Radius="36" Opacity="0.3" />
-                </Border.Shadow>
-
-                <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
-                    <VerticalStackLayout Spacing="0">
-                        <Label Text="{Binding VolumeText}" FontSize="58" FontAttributes="Bold"
-                               HorizontalOptions="Center" TextColor="White" />
-                        <Label Text="ÂM LƯỢNG" FontSize="11" CharacterSpacing="3"
-                               HorizontalOptions="Center" TextColor="#8D97AD" />
-                    </VerticalStackLayout>
-
-                    <controls:VirtualRotaryKnobView IsVisible="{Binding UseKnob}"
-                        Value="{Binding Volume, Mode=TwoWay}"
-                        WidthRequest="160" HeightRequest="160" HorizontalOptions="Center" />
-
-                    <VerticalStackLayout IsVisible="{Binding UseSlider}" Spacing="4" WidthRequest="260">
-                        <Slider x:Name="VolumeSlider" Minimum="0" Maximum="1"
-                                Value="{Binding Volume, Mode=TwoWay}" HeightRequest="40"
-                                MinimumTrackColor="#5B8CFF" MaximumTrackColor="#3A4263"
-                                ThumbColor="#B061FF" DragCompleted="OnSliderDragCompleted" />
-                        <Grid ColumnDefinitions="*,*">
-                            <Label Text="0%" TextColor="#8D97AD" FontSize="11" />
-                            <Label Grid.Column="1" Text="100%" TextColor="#8D97AD" FontSize="11"
-                                   HorizontalTextAlignment="End" />
-                        </Grid>
-                    </VerticalStackLayout>
-
-                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8" WidthRequest="260">
-                        <Button Grid.Column="0" Text="−" Command="{Binding StepCommand}" CommandParameter="-1"
-                                Style="{StaticResource RoundBtn}" />
-                        <Button Grid.Column="1" Text="+" Command="{Binding StepCommand}" CommandParameter="1"
-                                Style="{StaticResource RoundBtn}" />
-                        <Button Grid.Column="2" Text="{Binding MuteButtonText}" Command="{Binding ToggleMuteCommand}"
-                                Style="{StaticResource RoundBtn}" />
-                        <Button Grid.Column="3" Text="{Binding PlayButtonText}" Command="{Binding TogglePlayCommand}"
-                                Style="{StaticResource RoundBtn}" FontSize="10" />
-                    </Grid>
-                    <Label Text="{Binding AudioStatusText}" FontSize="12"
-                           HorizontalOptions="Center" TextColor="#B7C3D8" />
-
-                    <Button Text="⇄  Đổi chế độ Knob / Slider" Command="{Binding ToggleModeCommand}"
-                            TextColor="White" FontAttributes="Bold" CornerRadius="22" HeightRequest="46">
-                        <Button.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                <GradientStop Color="#4F8CFF" Offset="0" />
-                                <GradientStop Color="#A25BFF" Offset="1" />
-                            </LinearGradientBrush>
-                        </Button.Background>
-                    </Button>
-
-                    <Button Text="{Binding ThemeButtonText}" Command="{Binding ToggleThemeCommand}"
-                            TextColor="White" BackgroundColor="#273253" FontAttributes="Bold"
-                            CornerRadius="22" HeightRequest="42" />
-                </VerticalStackLayout>
+            <!-- Compact always-on-top controller -->
+            <Border IsVisible="{Binding IsCompactMode}" WidthRequest="540" MinimumWidthRequest="520"
+                    HorizontalOptions="Center" Padding="12,10" StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light=#DFE1E7, Dark=#30333B}"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#191B20}"
+                    StrokeShape="RoundRectangle 18">
+                <Grid ColumnDefinitions="34,*,Auto,Auto,Auto" ColumnSpacing="10" HeightRequest="52"
+                      VerticalOptions="Center">
+                    <Label Text="&#xE767;" FontFamily="Segoe MDL2 Assets" FontSize="20"
+                           TextColor="{AppThemeBinding Light=#5E50C8, Dark=#B2A8FF}"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Slider Grid.Column="1" Minimum="0" Maximum="1" MinimumWidthRequest="260"
+                            HorizontalOptions="Fill" Value="{Binding Volume, Mode=TwoWay}"
+                            MinimumTrackColor="#8B7CFF" MaximumTrackColor="#454750" ThumbColor="#B2A8FF"
+                            VerticalOptions="Center" />
+                    <Label Grid.Column="2" Text="{Binding VolumePercent}" FontSize="20" FontAttributes="Bold"
+                           WidthRequest="42" HorizontalTextAlignment="End" VerticalTextAlignment="Center"
+                           TextColor="{AppThemeBinding Light=#191A20, Dark=#F5F5F7}" />
+                    <Button Grid.Column="3" Text="{Binding MuteButtonText}" Command="{Binding ToggleMuteCommand}"
+                            BackgroundColor="{Binding MuteButtonBackground}" TextColor="White"
+                            CornerRadius="12" FontSize="10" FontAttributes="Bold" Padding="9,6"
+                            HeightRequest="38" VerticalOptions="Center" />
+                    <Button Grid.Column="4" Text="↗" Command="{Binding ToggleCompactModeCommand}"
+                            Style="{StaticResource SecondaryButton}" FontSize="17" Padding="9,4"
+                            WidthRequest="40" HeightRequest="38" VerticalOptions="Center" />
+                </Grid>
             </Border>
         </VerticalStackLayout>
     </ScrollView>

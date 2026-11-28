@@ -72,4 +72,8 @@
 		<PackageReference Include="Plugin.Maui.Audio" Version="4.0.0" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows10.0.19041.0'">
+		<PackageReference Include="NAudio.Wasapi" Version="3.3.0" />
+	</ItemGroup>
+
 </Project>
